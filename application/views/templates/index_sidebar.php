@@ -12,75 +12,46 @@
         <!-- Divider -->
         <hr class="sidebar-divider">
 
-        <!-- Heading -->
-        <div class="sidebar-heading">
-            Super Admin
-        </div>
+        <!-- Menu Access Query -->
+        <?php
+        $id_role = $this->session->userdata('id_role');
+        $queryMenu = "SELECT `user_menu`.`id_menu` , `menu`
+                    FROM `user_menu` JOIN `user_menu_access` 
+                    ON `user_menu`.`id_menu` = `user_menu_access`.`id_menu`
+                    WHERE `user_menu_access`.`id_role` = $id_role
+                    ORDER BY `user_menu_access`.`id_menu` ASC
+                    ";
 
-        <!-- Nav Item - Dashboard -->
-        <li class="nav-item">
-            <a class="nav-link" href="index.html">
-                <i class="fas fa-fw fa-tachometer-alt"></i>
-                <span>Dashboard</span></a>
-        </li>
+        $menu = $this->db->query($queryMenu)->result_array();
+        ?>
 
-        <!-- Nav Item - Account -->
-        <li class="nav-item">
-            <a class="nav-link" href="index.html">
-                <i class="fas fa-fw fa-user-alt"></i>
-                <span>Manage Account</span></a>
-        </li>
+        <!-- Menu Looping -->
+        <?php foreach ($menu as $m) : ?>
+            <div class="sidebar-heading">
+                <?= $m['menu']; ?>
+            </div>
 
-        <!-- Divider -->
-        <hr class="sidebar-divider">
+            <!-- Submenu Looping -->
+            <?php
+            $menuId = $m['id_menu'];
+            $querySubmenu = "SELECT *
+                            FROM `user_submenu` 
+                            WHERE `id_menu` = $menuId
+                            AND `is_active` = 1
+                            ";
 
-        <!-- Heading -->
-        <div class="sidebar-heading">
-            Konsultan Pusat
-        </div>
+            $subMenu = $this->db->query($querySubmenu)->result_array();
+            ?>
 
-        <!-- Nav Item - Profile -->
-        <li class="nav-item">
-            <a class="nav-link" href="charts.html">
-                <i class="fas fa-fw fa-user-alt"></i>
-                <span>My Profile</span></a>
-        </li>
+            <?php foreach ($subMenu as $sm) : ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="<?= base_url($sm['url']); ?>">
+                        <i class="<?= $sm['icon']; ?>"></i>
+                        <span><?= $sm['title']; ?></span></a>
+                </li>
+            <?php endforeach; ?>
 
-        <!-- Nav Item - File Status -->
-        <li class="nav-item">
-            <a class="nav-link" href="charts.html">
-                <i class="far fa-fw fa-file"></i>
-                <span>File Status</span></a>
-        </li>
-
-        <!-- Nav Item - File Monitoring -->
-        <li class="nav-item">
-            <a class="nav-link" href="charts.html">
-                <i class="fas fa-fw fa-file"></i>
-                <span>File Monitoring</span></a>
-        </li>
-
-        <!-- Divider -->
-        <hr class="sidebar-divider">
-
-        <!-- Heading -->
-        <div class="sidebar-heading">
-            Konsultan Daerah
-        </div>
-
-        <!-- Nav Item - Profile -->
-        <li class="nav-item">
-            <a class="nav-link" href="charts.html">
-                <i class="fas fa-fw fa-user-alt"></i>
-                <span>My Profile</span></a>
-        </li>
-
-        <!-- Nav Item - File Upload -->
-        <li class="nav-item">
-            <a class="nav-link" href="charts.html">
-                <i class="fas fa-fw fa-file-upload"></i>
-                <span>Upload File</span></a>
-        </li>
+        <?php endforeach; ?>
 
         <!-- Divider -->
         <hr class="sidebar-divider">

@@ -8,8 +8,10 @@ class KonsultanPusat extends CI_Controller
         // Get Session Data
         $data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
 
+        // Set Title
         $data['title'] = "Konsultan Pusat";
 
+        // Load Konsultan Pusat Page
         $this->load->view('templates/index_header', $data);
         $this->load->view('templates/index_sidebar', $data);
         $this->load->view('templates/index_topbar', $data);
